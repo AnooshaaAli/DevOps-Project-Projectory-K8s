@@ -1,0 +1,2 @@
+### DevOps Project-Deploying "Projectory"
+This repository contains argoCD resources and kubernetes manifest files for deploying our app "Projecory", whose source code is available at: https://github.com/AnooshaaAli/TaskManagementAndTeamCollaborationTool
