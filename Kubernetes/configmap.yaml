@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: projectory-config
+  namespace: online-event-booking-saleha-irum
+data:
+  POSTGRES_HOST: "postgresql"
+  POSTGRES_PORT: "5433"
+  RABBITMQ_HOST: "rabbitmq"
+  RABBITMQ_PORT: "5673"
+  MONGODB_PORT: "27018"
+  FRONTEND_SERVICE_PORT: "82"
+  USER_SERVICE_PORT: "8001"
+  EVENT_SERVICE_PORT: "8081"
+  BOOKING_SERVICE_PORT: "5003"
+  NOTIFICATION_SERVICE_PORT: "5004"
+  PAYMENT_SERVICE_PORT: "5005"
