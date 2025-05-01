@@ -19,3 +19,24 @@ spec:
           imagePullPolicy: Always  
           ports:
             - containerPort: 8080
+          env:
+          - name: BACKEND_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: backend-configmap
+                key: backend-port
+          - name: BACKEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: backend-configmap
+                key: backend-host
+          - name: MYSQL_DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: backend-configmap
+                key: mysql-db-name
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-password-secret
+                key: password

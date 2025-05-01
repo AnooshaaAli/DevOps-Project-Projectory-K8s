@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+  namespace: projectory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+        spec:
+          initContainers:
+            - name: init-mysql-db
+              image: mysql:8.0
+              command: [ "sh", "-c" ]
+              args:
+                - |
+                  echo "Waiting for MySQL...";
+                  until mysql -h mysql-service -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"; do
+                    sleep 2;
+                  done;
+                  echo "MySQL is up. Running schema...";
+                  mysql -h mysql-service -uroot -p${MYSQL_ROOT_PASSWORD} projectory < /docker-entrypoint-initdb.d/schema.sql
+              env:
+                - name: MYSQL_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-password-secret
+                      key: mysql-root-password
+              volumeMounts:
+                - name: init-script
+                  mountPath: /docker-entrypoint-initdb.d
+          containers:
+            - name: mysql
+              image: mysql:8.0
+              env:
+                - name: MYSQL_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mysql-password-secret  
+                      key: mysql-root-password 
+                - name: MYSQL_DATABASE
+                  value: "projectory"
+              ports:
+                - containerPort: 3306
+              volumeMounts:
+                - name: mysql-data
+                  mountPath: /var/lib/mysql
+          volumes:
+            - name: mysql-data
+              persistentVolumeClaim:
+                claimName: mysql-pvc
+            - name: init-script
+              configMap:
+                name: mysql-init-script
+                

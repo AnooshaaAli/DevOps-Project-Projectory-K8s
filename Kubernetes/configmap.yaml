@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: projectory-config
-  namespace: online-event-booking-saleha-irum
+  namespace: projectory
 data:
   POSTGRES_HOST: "postgresql"
   POSTGRES_PORT: "5433"
