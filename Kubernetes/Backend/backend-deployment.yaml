@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-pod
-          image: salehaa/projectory-backend:latest
+          image: salehaa/projectory-backend:v6
           imagePullPolicy: Always  
           ports:
             - containerPort: 8080
@@ -30,13 +30,14 @@ spec:
               configMapKeyRef:
                 name: backend-configmap
                 key: backend-host
-          - name: MYSQL_DB_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: backend-configmap
-                key: mysql-db-name
-          - name: MYSQL_ROOT_PASSWORD
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql-service.projectory.svc.cluster.local:3306/projectory
+
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+
+          - name: SPRING_DATASOURCE_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: mysql-password-secret
-                key: password
+                key: mysql-root-password

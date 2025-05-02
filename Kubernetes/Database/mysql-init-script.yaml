@@ -2,29 +2,18 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-init-script
+  namespace: projectory
 data:
   init.sql: |
-    CREATE DATABASE projectory;
+    CREATE DATABASE IF NOT EXISTS projectory;
     USE projectory;
-
-    -- File Table 
-    CREATE TABLE File (
-        fileID INT AUTO_INCREMENT PRIMARY KEY,
-        fileName VARCHAR(255) UNIQUE NOT NULL,
-        mimeType VARCHAR(100),
-        filePath TEXT,
-        projectID INT,
-        FOREIGN KEY (projectID) REFERENCES Project(projectID) ON DELETE CASCADE
-    );
 
     -- Account Table
     CREATE TABLE Account (
         accountID INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        profilePicFileID INT NULL,
-        FOREIGN KEY (profilePicFileID) REFERENCES File(fileID) ON DELETE SET NULL
+        email VARCHAR(255) UNIQUE NOT NULL
     );
 
     -- User Table
@@ -104,6 +93,23 @@ data:
         FOREIGN KEY (projectID) REFERENCES Project(projectID) ON DELETE CASCADE,
         FOREIGN KEY (userID) REFERENCES User(userID) ON DELETE CASCADE
     );
+
+    -- File Table 
+    CREATE TABLE File (
+        fileID INT AUTO_INCREMENT PRIMARY KEY,
+        fileName VARCHAR(255) UNIQUE NOT NULL,
+        mimeType VARCHAR(100),
+        filePath TEXT,
+        projectID INT,
+        FOREIGN KEY (projectID) REFERENCES Project(projectID) ON DELETE CASCADE
+    );
+
+    ALTER TABLE Account
+    ADD COLUMN profilePicFileID INT,
+    ADD CONSTRAINT fk_profile_pic FOREIGN KEY (profilePicFileID) REFERENCES File(fileID) ON DELETE SET NULL;
+
+    ALTER TABLE Account
+    MODIFY COLUMN profilePicFileID INT NULL;
 
     -- Audit Trail
     CREATE TABLE AuditTrail (
@@ -315,7 +321,7 @@ data:
         INSERT INTO AuditTrail (action, details)
         VALUES (
             'Team Created',
-            CONCAT('Team with ID ', NEW.teamID, ' created for project with ID ')
+            CONCAT('Team with ID ', NEW.teamID, ' created for project with ID ', NEW.projectID)
         );
     END$$
 

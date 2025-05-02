@@ -12,49 +12,27 @@ spec:
     metadata:
       labels:
         app: mysql
-        spec:
-          initContainers:
-            - name: init-mysql-db
-              image: mysql:8.0
-              command: [ "sh", "-c" ]
-              args:
-                - |
-                  echo "Waiting for MySQL...";
-                  until mysql -h mysql-service -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT 1"; do
-                    sleep 2;
-                  done;
-                  echo "MySQL is up. Running schema...";
-                  mysql -h mysql-service -uroot -p${MYSQL_ROOT_PASSWORD} projectory < /docker-entrypoint-initdb.d/schema.sql
-              env:
-                - name: MYSQL_ROOT_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: mysql-password-secret
-                      key: mysql-root-password
-              volumeMounts:
-                - name: init-script
-                  mountPath: /docker-entrypoint-initdb.d
-          containers:
-            - name: mysql
-              image: mysql:8.0
-              env:
-                - name: MYSQL_ROOT_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: mysql-password-secret  
-                      key: mysql-root-password 
-                - name: MYSQL_DATABASE
-                  value: "projectory"
-              ports:
-                - containerPort: 3306
-              volumeMounts:
-                - name: mysql-data
-                  mountPath: /var/lib/mysql
-          volumes:
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-password-secret
+                  key: mysql-root-password
+          ports:
+            - containerPort: 3306
+          volumeMounts:
             - name: mysql-data
-              persistentVolumeClaim:
-                claimName: mysql-pvc
-            - name: init-script
-              configMap:
-                name: mysql-init-script
-                
+              mountPath: /var/lib/mysql
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+        - name: init-scripts
+          configMap:
+            name: mysql-init-script
