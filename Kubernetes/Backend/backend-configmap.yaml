@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-configmap
+  namespace: projectory
+data:
+  backend-port: "3001"
+  backend-host: "backend-service"
+  mysql-db-name: "projectory"
+  mysql-host: "mysql-service"     
+  mysql-port: "3306"

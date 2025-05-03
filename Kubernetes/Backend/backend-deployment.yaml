@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: projectory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-pod
+          image: salehaa/projectory-backend:v8
+          imagePullPolicy: Always  
+          ports:
+            - containerPort: 8080
+          env:
+          - name: BACKEND_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: backend-configmap
+                key: backend-port
+          - name: BACKEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: backend-configmap
+                key: backend-host
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:mysql://mysql-service.projectory.svc.cluster.local:3306/projectory
+
+          - name: SPRING_DATASOURCE_USERNAME
+            value: root
+
+          - name: SPRING_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-password-secret
+                key: mysql-root-password
+          volumeMounts:
+              - mountPath: /app/files
+                name: file-storage
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: files-pvc

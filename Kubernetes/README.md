@@ -1,2 +1,56 @@
 # Kubernetes Manifest Files
-This folder contains the deployment and service manifest files for the frontend and backend services of our project. It also contains the configmaps and secrets.
+This folder contains the deployment and service manifest files for the frontend and backend services of our project. It also contains the configmaps and secrets. 
+
+## Applying the Manifest Files
+They have to be applied in the following order:
+```bash
+kubectl apply -f namespace.yaml
+```
+then move into the database folder: `cd database` and then apply the files in the following order:
+```bash
+kubectl apply -f mysql-password-secret.yaml
+kubectl apply -f mysql-init-script.yaml
+kubectl apply -f mysql-config.yaml
+kubectl apply -f database-volumes.yaml
+kubectl apply -f database-deployment.yaml
+kubectl apply -f database-service.yaml
+```
+next, move into the backend folder:
+```bash
+cd ..
+cd backend
+```
+and apply the files in the following order:
+```bash
+kubectl apply -f backend-configmap.yaml
+kubectl apply -f backend-volumes.yaml
+kubectl apply -f backend-deployment.yaml
+kubectl apply -f backend-service.yaml
+```
+next, move into the frontend folder:
+```bash
+cd ..
+cd frontend
+```
+and apply the files in the following order:
+```bash
+kubectl apply -f frontend-deployment.yaml
+kubectl apply -f frontend-service.yaml
+```
+finally, apply ingress resources:
+```bash
+cd ..
+kubectl apply -f ingress.yaml
+```
+apply the controller if you haven't applied it before:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/cloud/deploy.yaml
+```
+at the end of this process, check to see if everything is up and running:
+```bash
+kubectl get pods -n projectory
+kubectl get svc -n projectory
+```
+
+## Adding entry to hosts file
+The domain "projectory.com" must be mapped to port "127.0.0.1". Go to hosts file, and add this entry.
