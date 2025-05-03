@@ -28,6 +28,7 @@ data:
         projectID INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         teamLeadID INT,
+        description VARCHAR(255),
         FOREIGN KEY (teamLeadID) REFERENCES User(userID) ON DELETE SET NULL
     );
 

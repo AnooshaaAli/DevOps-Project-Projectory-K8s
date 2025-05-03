@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-pod
-          image: salehaa/projectory-backend:v6
+          image: salehaa/projectory-backend:v8
           imagePullPolicy: Always  
           ports:
             - containerPort: 8080
@@ -41,3 +41,10 @@ spec:
               secretKeyRef:
                 name: mysql-password-secret
                 key: mysql-root-password
+          volumeMounts:
+              - mountPath: /app/files
+                name: file-storage
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: files-pvc
