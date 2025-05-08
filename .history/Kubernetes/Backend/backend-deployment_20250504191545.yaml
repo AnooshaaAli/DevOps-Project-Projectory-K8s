@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: backend-pod
-          image: ***/projectory-backend:f1446d
+          args: []
+          image: salehaa/projectory-backend:v8
           imagePullPolicy: Always  
           ports:
             - containerPort: 8080

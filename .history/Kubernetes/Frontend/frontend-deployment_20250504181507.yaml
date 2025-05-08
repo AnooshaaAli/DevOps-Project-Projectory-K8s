@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend-pod
-          image: ***/projectory-frontend:f1446d
+          image: salehaa/projectory-frontend:v7
           imagePullPolicy: Always  
           ports:
             - containerPort: 80

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend-pod
-          image: ***/projectory-backend:f1446d
+          image: anooshaaali293/projectory-frontend:v9
           imagePullPolicy: Always  
           ports:
             - containerPort: 8080
