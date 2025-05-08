@@ -30,9 +30,9 @@ spec:
             - name: init-scripts
               mountPath: /docker-entrypoint-initdb.d
             # Commented out for testing without the custom config file
-            # - name: mysql-config
-            #   mountPath: /etc/mysql/my.cnf
-            #   subPath: my.cnf
+            - name: mysql-config
+              mountPath: /etc/mysql/my.cnf
+              subPath: my.cnf
           securityContext:
             runAsUser: 999
             runAsGroup: 999

@@ -44,6 +44,6 @@ spec:
           configMap:
             name: mysql-init-script
         # Temporarily comment out mysql-config volume
-        # - name: mysql-config
-        #   configMap:
-        #     name: mysql-config
+        - name: mysql-config
+          configMap:
+            name: mysql-config

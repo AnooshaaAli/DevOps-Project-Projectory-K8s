@@ -29,13 +29,9 @@ spec:
               mountPath: /var/lib/mysql
             - name: init-scripts
               mountPath: /docker-entrypoint-initdb.d
-            # Commented out for testing without the custom config file
-            # - name: mysql-config
-            #   mountPath: /etc/mysql/my.cnf
-            #   subPath: my.cnf
-          securityContext:
-            runAsUser: 999
-            runAsGroup: 999
+            - name: mysql-config
+              mountPath: /etc/mysql/my.cnf
+              subPath: my.cnf 
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
@@ -43,7 +39,6 @@ spec:
         - name: init-scripts
           configMap:
             name: mysql-init-script
-        # Temporarily comment out mysql-config volume
-        # - name: mysql-config
-        #   configMap:
-        #     name: mysql-config
+        - name: mysql-config
+          configMap:
+            name: mysql-config
